@@ -1,52 +1,58 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <title>Grant Google Drive Access</title>
 <style>
-body { font-family: Arial; padding: 20px; max-width: 800px; margin: auto; }
-input { width: 250px; padding: 6px; margin: 4px; }
-button { padding: 8px 16px; }
+body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+input { width: 100%; padding: 10px; margin: 10px 0; }
+button { padding: 10px 20px; font-size: 16px; }
 </style>
 </head>
 <body>
 
 <h2>Grant Google Drive Access</h2>
-<p>Provide the Customer ID (given by admin) and click Allow. This will open Google consent screen.</p>
+<p>Enter your Customer ID and click Allow.</p>
 
-<label>Customer ID</label><br>
-<input id="cust" placeholder="e.g. ACME123"><br><br>
-
-<label>GAS Redirect URL</label><br>
-<input id="redirect" placeholder="https://script.google.com/macros/s/.../exec"><br><br>
-
-<label>Google OAuth Client ID</label><br>
-<input id="cid" placeholder="12345.apps.googleusercontent.com"><br><br>
-
-<label>Admin URL</label><br>
-<input id="admin" placeholder="https://your-admin.com"><br><br>
+<label>Customer ID</label>
+<input id="cust" placeholder="e.g. ACME123">
 
 <button onclick="startGrant()">Allow</button>
 
 <script>
-function startGrant() {
-    const cust = document.getElementById("cust").value;
-    const red = document.getElementById("redirect").value;
-    const cid = document.getElementById("cid").value;
-    const admin = document.getElementById("admin").value;
+// ==============================
+//  YOUR FIXED CONFIG VALUES HERE
+// ==============================
 
-    if(!cust || !red || !cid){
-        alert("Please fill Customer ID, Redirect URL and Client ID");
+// GAS Web App URL (from your Deploy → Web App)
+const GAS_REDIRECT_URL = "https://script.google.com/macros/s/AKfycbxMxlWR7u-7o5pnbJnj8CFITjzjx-Ddi3kCcUYbAFf8PVV-X9kqNpkmuaVHYeSk1YtL/exec
+";
+
+// Google OAuth Client ID
+const CLIENT_ID = "743732668122-1d3s4j87eglghql0jdklqmvtvdpm1gud.apps.googleusercontent.com ";
+
+// Your Admin URL
+const ADMIN_URL = "https://your-admin.com";
+
+// ==============================
+function startGrant() {
+    const cust = document.getElementById("cust").value.trim();
+
+    if (!cust) {
+        alert("Please enter Customer ID");
         return;
     }
 
-    // GAS will use the secret (not customer)
-    const state = btoa(JSON.stringify({cust_id: cust, admin_url: admin}));
+    const state = btoa(JSON.stringify({
+        cust_id: cust,
+        admin_url: ADMIN_URL
+    }));
 
     const url =
       "https://accounts.google.com/o/oauth2/v2/auth?" +
-      "client_id=" + encodeURIComponent(cid) +
-      "&redirect_uri=" + encodeURIComponent(red) +
+      "client_id=" + encodeURIComponent(CLIENT_ID) +
+      "&redirect_uri=" + encodeURIComponent(GAS_REDIRECT_URL) +
       "&response_type=code" +
       "&scope=" + encodeURIComponent("https://www.googleapis.com/auth/drive.file") +
       "&access_type=offline" +
