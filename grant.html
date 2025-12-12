@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grant Google Drive Access</title>
+  <style>body{font-family:system-ui,Roboto,Arial;padding:18px;max-width:720px;margin:auto}</style>
+</head>
+<body>
+<h2>Grant Google Drive Access</h2>
+<p>Provide the Customer ID (given by admin) and click Allow. This will open Google consent screen.</p>
+
+<label>Customer ID</label>
+<input id="cust" placeholder="e.g. ACME123" />
+
+<label>GAS Redirect URL (paste the GAS web app URL)</label>
+<input id="redirect" placeholder="https://script.google.com/macros/s/XXXXX/exec" />
+
+<label>Google OAuth Client ID</label>
+<input id="cid" placeholder="your_client_id.apps.googleusercontent.com" />
+
+<label>Google OAuth Client Secret</label>
+<input id="sec" placeholder="your_client_secret" />
+
+<button onclick="go()">Allow</button>
+
+<script>
+function go(){
+  const c = document.getElementById("cust").value.trim();
+  const r = document.getElementById("redirect").value.trim();
+  const cid = document.getElementById("cid").value.trim();
+  const sec = document.getElementById("sec").value.trim();
+  if(!c||!r||!cid||!sec){ alert("Fill all fields"); return; }
+
+  const url =
+   `https://accounts.google.com/o/oauth2/v2/auth?`+
+   `client_id=${encodeURIComponent(cid)}`+
+   `&redirect_uri=${encodeURIComponent(r)}`+
+   `&response_type=code&scope=${encodeURIComponent("https://www.googleapis.com/auth/drive")}`+
+   `&access_type=offline&prompt=consent`+
+   `&state=${encodeURIComponent(c)}`;
+
+  window.location.href = url;
+}
+</script>
+
+</body>
+</html>
