@@ -1,67 +1,31 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Grant Google Drive Access</title>
-<style>
-body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
-input { width: 100%; padding: 10px; margin: 10px 0; }
-button { padding: 10px 20px; font-size: 16px; }
-</style>
+  <title>Grant Drive Access</title>
 </head>
 <body>
-
 <h2>Grant Google Drive Access</h2>
-<p>Enter your Customer ID and click Allow.</p>
 
-<label>Customer ID</label>
-<input id="cust" placeholder="e.g. ACME123">
-
-<button onclick="startGrant()">Allow</button>
+<button onclick="grant()">Grant Access</button>
 
 <script>
-// ==============================
-//  YOUR FIXED CONFIG VALUES HERE
-// ==============================
+function grant() {
+  const client_id = "YOUR_GOOGLE_CLIENT_ID";
+  const redirect = "http://PI_IP:8080/oauth";
+  const scope = encodeURIComponent("https://www.googleapis.com/auth/drive.file");
 
-// GAS Web App URL (from your Deploy → Web App)
-const GAS_REDIRECT_URL = "https://script.google.com/macros/s/AKfycbxMxlWR7u-7o5pnbJnj8CFITjzjx-Ddi3kCcUYbAFf8PVV-X9kqNpkmuaVHYeSk1YtL/exec
-";
+  const url =
+    "https://accounts.google.com/o/oauth2/v2/auth" +
+    "?response_type=code" +
+    "&access_type=offline" +
+    "&prompt=consent" +
+    "&client_id=" + client_id +
+    "&redirect_uri=" + redirect +
+    "&scope=" + scope;
 
-// Google OAuth Client ID
-const CLIENT_ID = "743732668122-1d3s4j87eglghql0jdklqmvtvdpm1gud.apps.googleusercontent.com ";
-
-// Your Admin URL
-const ADMIN_URL = "https://your-admin.com";
-
-// ==============================
-function startGrant() {
-    const cust = document.getElementById("cust").value.trim();
-
-    if (!cust) {
-        alert("Please enter Customer ID");
-        return;
-    }
-
-    const state = btoa(JSON.stringify({
-        cust_id: cust,
-        admin_url: ADMIN_URL
-    }));
-
-    const url =
-      "https://accounts.google.com/o/oauth2/v2/auth?" +
-      "client_id=" + encodeURIComponent(CLIENT_ID) +
-      "&redirect_uri=" + encodeURIComponent(GAS_REDIRECT_URL) +
-      "&response_type=code" +
-      "&scope=" + encodeURIComponent("https://www.googleapis.com/auth/drive.file") +
-      "&access_type=offline" +
-      "&prompt=consent" +
-      "&state=" + encodeURIComponent(state);
-
-    window.location = url;
+  window.location.href = url;
 }
 </script>
-
 </body>
 </html>
+
